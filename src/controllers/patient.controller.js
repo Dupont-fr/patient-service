@@ -19,6 +19,8 @@ class PatientController {
       const filters = { ...req.query }
       if (req.user?.role === 'ADMIN') {
         // Admin voit tout
+      } else if (filters.allHospitals === 'true') {
+        // Recherche globale multi-hôpitaux (ex: création de consultation)
       } else if (filters.search) {
         // Recherche globale : pas de filtre hôpital
       } else if (req.user?.hospitalUser) {
