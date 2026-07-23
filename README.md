@@ -1,6 +1,6 @@
 # MediSys — patient-service
 
-Microservice de gestion des patients et des antécédents médicaux pour MediSys.
+Microservice de gestion des patients et des antécédents médicaux pour MediSys. Chiffrement AES-256-GCM des données sensibles.
 
 ## Stack
 
@@ -8,6 +8,7 @@ Microservice de gestion des patients et des antécédents médicaux pour MediSys
 - **Framework** : Express
 - **Base de données** : PostgreSQL (via `pg` Pool)
 - **Auth** : JWT (via middleware)
+- **Chiffrement** : AES-256-GCM (données sensibles)
 
 ## Démarrage
 
@@ -28,6 +29,7 @@ Port par défaut : `5002`
 | `NODE_ENV` | Environnement | development |
 | `DATABASE_URL` | URL de connexion PostgreSQL | — |
 | `JWT_SECRET` | Clé JWT (doit correspondre au gateway) | — |
+| `ENCRYPTION_KEY` | Clé hex 64 chars pour AES-256-GCM | — |
 
 ## Scripts
 
@@ -44,7 +46,7 @@ Toutes les routes nécessitent un header `Authorization: Bearer <token>`.
 
 | Méthode | Route | Description |
 |---|---|---|
-| GET | `/` | Liste des patients (filtres : search, hopital, page, limit) |
+| GET | `/` | Liste des patients (filtres : search, hopital, allHospitals, page, limit) |
 | GET | `/:id` | Détail d'un patient |
 | POST | `/` | Créer un patient |
 | PUT | `/:id` | Modifier un patient |
@@ -64,7 +66,10 @@ Toutes les routes nécessitent un header `Authorization: Bearer <token>`.
 
 ## Filtrage par hôpital
 
-Les endpoints patients et antécédents injectent `hopital` depuis le JWT (`hospitalUser`) pour filtrer les données. Les admins voient toutes les données sans filtre. Les antécédents sont en lecture seule pour les hôpitaux non propriétaires.
+- Les endpoints patients et antécédents injectent `hopital` depuis le JWT (`hospitalUser`) pour filtrer les données
+- Les admins voient toutes les données sans filtre
+- Paramètre `allHospitals=true` pour inclure tous les hôpitaux (utile pour CreateConsultation)
+- Les antécédents sont en lecture seule pour les hôpitaux non propriétaires
 
 ## Structure
 
